@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Thanks for your order!</title>
+    <meta http-equiv="X-UA-Compatible" main_header="IE=edge" content="IE=edge">
+    <meta name="viewport" main_header="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="thankyou.css"/>
+</head>
+<body>
+   <!-- Remember that alternative syntax is good and html inside php is bad -->
+   <?php if(!validation_and_Sanitization()): ?>
+    <header><h1> Thank you for your order <?= $GLOBALS['valid_elements']['fullname'] ?></h1></header>
+    <table>
+        <tbody>
+            <tr>
+                <td colspan="4">Address Information</td>
+            </tr>
+            <tr>
+                <td>Address:</td>
+                <td ><?= $GLOBALS['valid_elements']['address']?></td>
+                <td>City:</td>
+                <td><?= $GLOBALS['valid_elements']['city']?></td>
+            </tr>
+            <tr>
+                <td>Province:</td>
+                <td><?= $GLOBALS['valid_elements']['province']?></td>
+                <td>Postal Code:</td>
+                <td><?= $GLOBALS['valid_elements']['postal']?></td>
+            </tr>
+            <tr>
+                <td colspan="2">Email:</td>
+                <td colspan="2"><?= $GLOBALS['valid_elements']['email']?></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <table>
+        <tbody>
+            <tr >
+                <td colspan="4">Order Information</td>
+            </tr>
+            <tr>
+                <td>Quantity</td>
+                <td>Description</td>
+                <td>Cost</td>
+            </tr>
+            <?php foreach($GLOBALS['valid_elements'] as $attribute_name => $attribute_value): ?>
+                <?php if(substr($attribute_name , 0, 3) === 'qty'): ?>
+                        <tr>
+                            <td><?= $attribute_value ?></td>
+                            <td><?= ITEM_DESCRIPTION_AND_PRICE[$attribute_name]['description'] ?></td>
+                            <td><?= ITEM_DESCRIPTION_AND_PRICE[$attribute_name]['price'] ?></td>
+                            <?php $cost_totals += $attribute_value * ITEM_DESCRIPTION_AND_PRICE[$attribute_name]['price'] ?>
+                            <?php if($cost_totals > 10000.00): ?>
+                                <?= header("Location: https://www.youtube.com/watch?v=Aq5WXmQQooo&t=9s") ?>
+                            <?php endif?>
+                        </tr>
+                        <?php endif ?>
+            <?php endforeach ?>
+            <tr>
+                <td colspan="2">Totals</td>
+                <td colspan="2"><?= '$' . $cost_totals ?></td>
+            </tr>
+        </tbody>
+    </table>
+    <?php else: ?>
+            <table>
+                <tbody>
+                    <tr><th>Sorry but some of your submissions were invalid</th></tr>
+
+                    <?php foreach($GLOBALS['invalid_elements'] as $element_name => $element_value): ?>
+                        <tr>
+                            <td><?= $element_name ?></td>
+                            <td><?= $element_value ?></td>
+                        </tr>
+                    <?php endforeach?>
+                </tbody>
+            </table>
+    <?php endif ?>
+</body>
+</html>
